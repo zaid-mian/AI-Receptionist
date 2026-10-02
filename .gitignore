@@ -29,6 +29,6 @@ yarn-error.log*
 .DS_Store
 Thumbs.db
 Recording*.mp4
-brag-output/brag2.mp4
+brag-output/
 .tempmediaStorage/
 

@@ -1,1 +1,0 @@
-Introducing Faisal Hospital AI Receptionist: 24/7 intelligent patient triage, natural bilingual voice, and instant verified doctor appointments with zero hold times. Built with React, Node.js, SQLite, and Neural Edge TTS.
