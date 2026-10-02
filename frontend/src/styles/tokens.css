@@ -1,0 +1,163 @@
+/* Design tokens — Premium Hospital Enterprise SaaS (Linear + Cal.com + Intercom + Apple + Notion synthesis) */
+
+:root {
+  --font-sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-display: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* Surfaces & Backgrounds */
+  --bg: #f8fafc;
+  --bg-subtle: #f1f5f9;
+  --card: #ffffff;
+  --card-elevated: #ffffff;
+
+  /* Hairlines & Borders */
+  --border: #e2e8f0;
+  --border-soft: #f1f5f9;
+  --border-strong: #cbd5e1;
+
+  /* Restrained Enterprise Radii */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius: 6px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-full: 9999px;
+
+  /* Restrained Elevation - Prioritize Crisp Hairlines */
+  --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 2px 4px rgba(15, 23, 42, 0.06);
+  --shadow-lg: 0 4px 8px rgba(15, 23, 42, 0.08);
+
+  /* Typography Ink */
+  --ink: #0f172a;        /* Deep slate 900 */
+  --ink-2: #334155;      /* Slate 700 */
+  --ink-3: #64748b;      /* Slate 500 */
+  --ink-4: #94a3b8;      /* Slate 400 */
+  --ink-faint: #cbd5e1;  /* Slate 300 */
+
+  /* Healthcare Primary Brand - Deep Hospital Sapphire */
+  --accent: #1d4ed8;         /* Solid Clinical Blue */
+  --accent-hover: #1e40af;   /* Deep Blue */
+  --accent-active: #172554;
+  --accent-soft: #eff6ff;    /* Clean Soft Blue Tint */
+  --accent-border: #bfdbfe;  /* Hairline Blue Tint */
+
+  /* Semantic Clinical Accents - Functional Meaning Only */
+  --success: #15803d;
+  --success-bg: #f0fdf4;
+  --success-border: #bbf7d0;
+
+  --warning: #b45309;
+  --warning-bg: #fffbeb;
+  --warning-border: #fde68a;
+
+  --danger: #b91c1c;
+  --danger-bg: #fef2f2;
+  --danger-border: #fecaca;
+
+  --info-ink: #1e40af;
+  --info-bg: #eff6ff;
+  --info-border: #bfdbfe;
+
+  /* Professional Dark Navigation Sidebar */
+  --sidebar-bg: #090d16;
+  --sidebar-surface: #0f172a;
+  --sidebar-ink: #cbd5e1;
+  --sidebar-ink-muted: #64748b;
+  --sidebar-ink-dim: #475569;
+  --sidebar-hover-bg: rgba(255, 255, 255, 0.05);
+  --sidebar-active-bg: rgba(30, 64, 175, 0.22);
+  --sidebar-active-border: #3b82f6;
+  --sidebar-active-ink: #ffffff;
+  --sidebar-hairline: rgba(255, 255, 255, 0.08);
+
+  --topbar-h: 54px;
+  --sidebar-w: 248px;
+
+  --transition: 120ms ease;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 14px;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+button {
+  font-family: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-xs);
+}
+
+::selection {
+  background: var(--accent-soft);
+  color: var(--accent-hover);
+}
+
+/* Tabular numerals for timestamps, prices, and metrics */
+.tnum {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+/* Subtle modern scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 6px;
+  border: 2px solid transparent;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}

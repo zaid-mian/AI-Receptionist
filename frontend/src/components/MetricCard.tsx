@@ -1,0 +1,17 @@
+export default function MetricCard({
+  label,
+  value,
+  hint,
+}: {
+  label: string;
+  value: string;
+  hint?: string;
+}) {
+  return (
+    <div className="metric-card">
+      <div className="metric-label">{label}</div>
+      <div className="metric-value tnum">{value}</div>
+      {hint && <div className="metric-hint">{hint}</div>}
+    </div>
+  );
+}
