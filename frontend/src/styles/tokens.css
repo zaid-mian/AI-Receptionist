@@ -1,9 +1,10 @@
 /* Design tokens — Premium Hospital Enterprise SaaS (Linear + Cal.com + Intercom + Apple + Notion synthesis) */
 
 :root {
-  --font-sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font-display: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-display: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-urdu: 'Noto Nastaliq Urdu', 'Jameel Noori Nastaleeq', serif;
 
   /* Surfaces & Backgrounds */
   --bg: #f8fafc;
@@ -33,8 +34,8 @@
   /* Typography Ink */
   --ink: #0f172a;        /* Deep slate 900 */
   --ink-2: #334155;      /* Slate 700 */
-  --ink-3: #64748b;      /* Slate 500 */
-  --ink-4: #94a3b8;      /* Slate 400 */
+  --ink-3: #526077;      /* AA 6.3:1 on white */
+  --ink-4: #5f6d83;      /* AA 5.0:1 on white, 4.6:1 on slate-100 (tertiary text) */
   --ink-faint: #cbd5e1;  /* Slate 300 */
 
   /* Healthcare Primary Brand - Deep Hospital Sapphire */

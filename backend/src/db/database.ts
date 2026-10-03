@@ -3,6 +3,7 @@ import { readFileSync, mkdirSync, existsSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { config } from "../config.js";
+import { seedIfEmpty } from "./seed.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
 
@@ -32,8 +33,10 @@ export function getDb(): DatabaseSync {
     // Migration is non-fatal if table already updated
   }
 
-  // Ensure seed check runs (handles empty tables on schema updates as well)
-  void import("./seed.js").then((m) => m.seedIfEmpty(getDb()));
+  // Seed synchronously before returning: callers (and tests) can rely on
+  // seeded data existing the moment getDb() returns. (Circular import with
+  // seed.js is safe — both modules only use each other's bindings at runtime.)
+  seedIfEmpty(db);
   return db;
 }
 

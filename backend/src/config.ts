@@ -6,6 +6,16 @@ function num(name: string, fallback: number): number {
   return Number.isFinite(n) ? n : fallback;
 }
 
+function requiredInProd(name: string, fallback: string, what: string): string {
+  const v = process.env[name];
+  if (v && v !== "") return v;
+  if (process.env.NODE_ENV === "production") {
+    throw new Error(`[config] ${name} must be set in production — refusing to boot with ${what}.`);
+  }
+  console.warn(`[config] ${name} not set — using insecure demo fallback. Never deploy like this.`);
+  return fallback;
+}
+
 export const config = {
   port: num("PORT", 8787),
   businessTimezone: process.env.BUSINESS_TIMEZONE || "Asia/Karachi",
@@ -15,9 +25,13 @@ export const config = {
   openaiBaseUrl: process.env.OPENAI_BASE_URL || (process.env.OPENROUTER_API_KEY ? "https://openrouter.ai/api/v1" : ""),
   openaiMaxTokens: num("OPENAI_MAX_TOKENS", 250),
   ttsProvider: process.env.TTS_PROVIDER || "edge",
-  jwtSecret: process.env.JWT_SECRET || "faisal_receptionist_jwt_secret_fallback_key_2026",
+  jwtSecret: requiredInProd("JWT_SECRET", "faisal_receptionist_jwt_secret_fallback_key_2026", "a demo JWT secret"),
   adminEmail: process.env.ADMIN_EMAIL || "admin@faisalhospital.pk",
-  adminDefaultPassword: process.env.ADMIN_DEFAULT_PASSWORD || "Admin@Faisal2026",
+  adminDefaultPassword: requiredInProd(
+    "ADMIN_DEFAULT_PASSWORD",
+    "Admin@Faisal2026",
+    "the default admin password"
+  ),
   version: "0.1.0",
 } as const;
 

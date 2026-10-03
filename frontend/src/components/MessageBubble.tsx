@@ -24,6 +24,14 @@ export interface ChatMessageItem {
   outcome?: ChatOutcome;
 }
 
+/** True when the message is primarily Urdu/Arabic script → RTL Nastaliq rendering. */
+export function isUrduScript(text: string): boolean {
+  if (!text) return false;
+  const urduChars = (text.match(/[\u0600-\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF]/g) || []).length;
+  const letters = (text.match(/[A-Za-z\u0600-\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF]/g) || []).length;
+  return letters > 0 && urduChars / letters > 0.3;
+}
+
 function AssistantAvatar() {
   return (
     <span className="msg-avatar" aria-hidden="true">
@@ -67,7 +75,11 @@ export default function MessageBubble({ message }: { message: ChatMessageItem })
         {m.tools?.map((t) => (
           <ToolActivityRow key={t.tool} label={t.label} phase={t.phase} summary={t.summary} />
         ))}
-        {m.content && <div className="msg-bubble">{m.content}</div>}
+        {m.content && (
+          <div className={`msg-bubble${isUrduScript(m.content) ? ' urdu' : ''}`} dir="auto">
+            {m.content}
+          </div>
+        )}
         {m.pending && !m.content && (
           <div className="typing-indicator" aria-label="Assistant is typing">
             <span />

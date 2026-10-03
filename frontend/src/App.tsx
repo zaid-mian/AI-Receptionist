@@ -8,6 +8,7 @@ import RequireAuth from './components/RequireAuth';
 import RequireRole from './components/RequireRole';
 import { PageMetaProvider, type PageMeta } from './layout/PageMeta';
 import PatientPortal from './pages/PatientPortal';
+import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Overview from './pages/Overview';
 import Receptionist from './pages/Receptionist';
@@ -65,8 +66,9 @@ export default function App() {
       <AuthProvider>
         <ToastProvider>
           <Routes>
-            {/* Public Patient-Facing Routes */}
-            <Route path="/" element={<PatientPortal />} />
+            {/* Public routes */}
+            <Route path="/" element={<Landing />} />
+            <Route path="/portal" element={<PatientPortal />} />
             <Route path="/voice" element={<Voice />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<TermsOfService />} />

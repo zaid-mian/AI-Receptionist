@@ -1,0 +1,20 @@
+services:
+  receptionist:
+    build: .
+    ports:
+      - "8787:8787"
+    environment:
+      PORT: 8787
+      BUSINESS_TIMEZONE: Asia/Karachi
+      # LLM is optional — without a key the built-in demo brain answers.
+      # OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      # Generate real secrets in production; the app refuses to boot in
+      # NODE_ENV=production without them.
+      JWT_SECRET: ${JWT_SECRET:-dev-only-jwt-secret-do-not-deploy}
+      ADMIN_DEFAULT_PASSWORD: ${ADMIN_DEFAULT_PASSWORD:-Admin@Faisal2026}
+    volumes:
+      - receptionist-data:/app/backend/data
+    restart: unless-stopped
+
+volumes:
+  receptionist-data:

@@ -1,0 +1,8 @@
+node_modules
+dist
+data
+*.db
+*.db-*
+.git
+faisal_hospital_demo_walkthrough.mp4
+inspiration.avif

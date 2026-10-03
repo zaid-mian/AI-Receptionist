@@ -282,43 +282,15 @@ export default function ChatPanel({
           <MessageBubble key={m.id} message={m} />
         ))}
         {actionChips && actionChips.length > 0 && messages.length <= 1 && (
-          <div style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: '8px',
-            marginTop: '2px',
-            marginLeft: '42px',
-            marginBottom: '8px'
-          }}>
+          <div className="chat-chips" role="group" aria-label="Suggested questions">
             {actionChips.map((chip, i) => (
               <button
                 key={i}
                 type="button"
+                className="chat-chip"
                 onClick={() => void send(chip.prompt)}
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  background: '#f8fafc',
-                  border: '1px solid #cbd5e1',
-                  borderRadius: '20px',
-                  padding: '6px 14px',
-                  fontSize: '0.8125rem',
-                  color: '#1e40af',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  transition: 'all 0.15s ease'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = '#eff6ff';
-                  e.currentTarget.style.borderColor = '#93c5fd';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = '#f8fafc';
-                  e.currentTarget.style.borderColor = '#cbd5e1';
-                }}
               >
-                <span>{chip.label}</span>
+                {chip.label}
               </button>
             ))}
           </div>
@@ -359,22 +331,10 @@ export default function ChatPanel({
             type="button"
             onClick={onVoiceClick}
             title="Start Voice Receptionist"
-            style={{
-              background: 'transparent',
-              border: 'none',
-              color: '#64748b',
-              padding: '8px 10px',
-              cursor: 'pointer',
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: 'var(--radius-sm)',
-              transition: 'color 0.15s ease'
-            }}
-            onMouseEnter={(e) => { e.currentTarget.style.color = '#1d4ed8'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.color = '#64748b'; }}
+            aria-label="Start voice receptionist"
+            className="chat-icon-btn"
           >
-            <Mic size={18} strokeWidth={2} />
+            <Mic size={18} strokeWidth={2} aria-hidden="true" />
           </button>
         )}
         <label htmlFor="chat-input" className="sr-only">
@@ -392,59 +352,26 @@ export default function ChatPanel({
         />
         <button
           type="submit"
-          className="btn btn-primary"
+          className="btn btn-primary chat-send"
           disabled={sending || !input.trim()}
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 6,
-            background: '#026aa7',
-            borderColor: '#026aa7',
-            padding: '8px 18px',
-            borderRadius: 'var(--radius-sm)',
-            fontWeight: 600
-          }}
         >
-          <Send size={13} strokeWidth={2} />
+          <Send size={13} strokeWidth={2} aria-hidden="true" />
           <span>{sending ? 'Sending…' : 'Send'}</span>
         </button>
       </form>
 
       {popularSearches && popularSearches.length > 0 && (
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px',
-          padding: '8px 18px 12px',
-          fontSize: '0.75rem',
-          color: '#64748b',
-          flexWrap: 'wrap',
-          borderTop: '1px solid #f1f5f9'
-        }}>
-          <span style={{ fontWeight: 600, color: '#334155', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-            Popular Searches:
-          </span>
+        <div className="chat-popular">
+          <span className="chat-popular-label">Popular searches:</span>
           {popularSearches.map((s, idx) => (
-            <span key={idx} style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-              {idx > 0 && <span style={{ color: '#cbd5e1' }}>•</span>}
-              <button
-                type="button"
-                onClick={() => void send(s.prompt)}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  padding: 0,
-                  color: '#2563eb',
-                  fontSize: '0.75rem',
-                  fontWeight: 500,
-                  cursor: 'pointer',
-                  textDecoration: 'underline',
-                  textUnderlineOffset: '2px'
-                }}
-              >
-                {s.label}
-              </button>
-            </span>
+            <button
+              key={idx}
+              type="button"
+              className="chat-popular-link"
+              onClick={() => void send(s.prompt)}
+            >
+              {s.label}
+            </button>
           ))}
         </div>
       )}

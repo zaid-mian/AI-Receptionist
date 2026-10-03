@@ -1669,3 +1669,73 @@ table.data-table {
   border-radius: var(--radius-sm);
   padding: 3px 8px;
 }
+
+/* Urdu / RTL chat bubbles — Nastaliq type, right-to-left */
+.msg-bubble.urdu {
+  font-family: var(--font-urdu);
+  line-height: 2.1;
+  font-size: 14.5px;
+}
+.msg-row.user .msg-bubble.urdu { text-align: right; }
+
+/* ---------- printable appointment slip ---------- */
+.slip-letterhead { display: none; }
+@media print {
+  body { background: #fff !important; }
+  body * { visibility: hidden; }
+  .booking-slip, .booking-slip * { visibility: visible; }
+  .booking-slip {
+    position: absolute; top: 0; left: 0; width: 100%;
+    background: #fff !important; border: 2px solid #0f172a !important;
+    border-radius: 0 !important; padding: 32px !important; text-align: center;
+  }
+  .no-print { display: none !important; }
+  .slip-letterhead { display: block; margin-bottom: 18px; }
+  .slip-hospital { font-size: 22px; font-weight: 800; letter-spacing: 0.06em; }
+  .slip-tagline { font-size: 11px; color: #475569; margin-top: 2px; }
+  .slip-title {
+    display: inline-block; margin-top: 12px; font-size: 13px; font-weight: 800;
+    letter-spacing: 0.22em; border-top: 1px solid #0f172a; border-bottom: 1px solid #0f172a;
+    padding: 5px 18px;
+  }
+}
+
+/* ---------- Chat controls (shared by landing + portal) ---------- */
+.chat-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 2px 0 8px 42px; }
+.chat-chip {
+  font: inherit; font-size: 0.8125rem; font-weight: 600; line-height: 1.3;
+  color: var(--info-ink); background: #fff; border: 1px solid #b8c3d6;
+  border-radius: var(--radius-full); padding: 7px 14px; cursor: pointer; text-align: left;
+  transition: background var(--transition), border-color var(--transition), transform var(--transition);
+}
+.chat-chip:hover { background: var(--accent-soft); border-color: var(--accent); }
+.chat-chip:active { transform: scale(0.98); }
+.chat-icon-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 38px; height: 38px; flex-shrink: 0; border-radius: 8px;
+  background: transparent; border: 1px solid transparent; color: var(--ink-3); cursor: pointer;
+  transition: background var(--transition), color var(--transition);
+}
+.chat-icon-btn:hover { background: var(--accent-soft); color: var(--accent); }
+.chat-send { padding: 9px 18px; }
+.chat-input-bar .input { min-height: 38px; }
+.chat-input-bar .input:disabled { background: var(--bg-subtle); color: var(--ink-3); cursor: not-allowed; }
+.chat-popular {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 6px 14px;
+  padding: 8px 18px 12px; font-size: 0.75rem; color: var(--ink-3); border-top: 1px solid var(--border-soft);
+}
+.chat-popular-label { font-weight: 600; color: var(--ink-2); }
+.chat-popular-link {
+  font: inherit; font-size: 0.75rem; font-weight: 600; background: none; border: 0; padding: 2px 0;
+  color: var(--accent); cursor: pointer; text-decoration: underline; text-underline-offset: 3px;
+}
+.chat-popular-link:hover { color: var(--accent-hover); }
+.msg-row.assistant .msg-bubble { background: #f1f5f9; }
+.msg-bubble a { color: inherit; text-decoration: underline; }
+@media (max-width: 640px) {
+  .msg-row { max-width: 94%; }
+  .chat-chips { margin-left: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .typing-indicator span, .tool-activity .tool-spinner { animation-duration: 2.4s; }
+}

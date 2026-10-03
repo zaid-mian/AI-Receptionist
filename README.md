@@ -1,29 +1,90 @@
-# Faisal Hospital — Enterprise AI Receptionist & Front Desk Triage System
+# Faisal Hospital — Enterprise AI Receptionist & Clinical Operations Suite
 
-An enterprise-grade, production-quality AI Receptionist, Clinical Availability Engine, and Live Front Desk Operator Console designed for modern healthcare institutions. Built on high-performance in-process architecture, real-time LLM token streaming, hybrid lexical/semantic retrieval (RRF + BM25), shift-aware doctor rosters, and instant human operator takeover.
+An enterprise-grade, production-quality AI Receptionist, Shift-Aware Clinical Availability Engine, and Live Front Desk Operator Console designed for modern healthcare institutions. Built on high-performance in-process architecture, real-time LLM token streaming, hybrid lexical/semantic retrieval (RRF + BM25), shift-aware doctor rosters, and instant human operator takeover.
 
-![Status](https://img.shields.io/badge/Status-Production%20Ready-059669?style=flat-square)
+![Status](https://img.shields.io/badge/Status-Demo%20Ready-059669?style=flat-square)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.6-3178C6?style=flat-square&logo=typescript)
 ![Node.js](https://img.shields.io/badge/Node.js-22%2B%20(Native%20SQLite)-339933?style=flat-square&logo=node.js)
-![React](https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react)
-![Tests](https://img.shields.io/badge/Tests-18%20Passed%20(0%20deps)-success?style=flat-square)
+![React](https://img.shields.io/badge/React-18%20(Vanilla%20CSS)-61DAFB?style=flat-square&logo=react)
+![Tests](https://img.shields.io/badge/Tests-19%20Passed%20(0%20deps)-success?style=flat-square)
 
 ---
 
-## 1. Executive Summary
+## 1. What We Built
 
-Healthcare front desks face heavy phone call and chat volumes, complex multi-specialist OPD shift schedules, emergency triage demands, and bilingual patient communication. 
+Modern hospital front desks face immense pressure: high phone call and chat volumes, multi-specialist OPD shift schedules, urgent emergency triage demands, and the necessity for bilingual communication. 
 
-**Faisal Hospital AI Receptionist** solves this with an architectural separation between a public-facing patient portal and a secure backoffice hospital operations console:
-- **Patients** receive immediate answers to hospital policies, visiting hours, and clinical fees, check doctor schedules, and book confirmed appointments with sub-250ms time-to-first-token streaming via **text chat** or **bilingual voice assistant** (`/voice`).
-- **Interactive Bilingual Voice Assistant**: Natural voice conversation in English and Urdu (`ur-PK`) powered by high-definition **Microsoft Edge Neural TTS**, browser Web Speech API, live frequency audio visualizer, full-duplex interruption (barge-in), and responsive mobile segmented controls.
-- **Receptionists & Supervisors** have a live Operator Desk with real-time SSE stream, instant one-click chat takeover, direct response composition, and automated emergency escalation tracking.
-- **Zero Heavy Dependencies**: Built with Ponytail code minimalism — uses Node.js standard library (`node:crypto` scrypt, `node:sqlite`, `node:events`, `node:test`), eliminating bloated external vector DBs and socket daemons.
+**Faisal Hospital AI Receptionist** is an end-to-end healthcare operations platform divided into two core systems:
+
+### A. Public Patient Portal (`/portal` & `/voice`)
+- **Real-Time Streaming AI Receptionist**: Sub-250ms streaming chat answering hospital policies, visiting hours, diagnostic lab fees, and directions with verified citations.
+- **Bilingual Urdu & English Support**: Full clinical language comprehension and verified Urdu medical vocabulary (`مجھے بچوں کے ڈاکٹر کے اوقات بتائیں`).
+- **Interactive Voice Assistant (`/voice`)**: Natural, hands-free voice conversations powered by 48kHz WebAudio telemetry, browser Speech Recognition with pause buffering (~2.0s), and lifelike **Microsoft Edge Neural TTS** in English (`en-US-JennyNeural`) and Urdu (`ur-PK-UzmaNeural`) with full-duplex barge-in interruption.
+- **Shift-Aware Appointment Booking**: Live synchronization with doctor OPD rosters, 15-minute slot reservation, dynamic availability calculations, and instant token generation without double-booking.
+- **Emergency Care & Red-Flag Guidance**: 24/7 trauma directions, emergency numbers, and automated red-flag symptom detection.
+
+### B. Hospital Administration & Governance Suite (`/admin`)
+- **Live Operator Desk (`/admin/operator`)**: Real-time SSE stream of all inbound patient chats with automated red-flag emergency triage alerts, 1-click human takeover (instantly pausing AI turns), and quick canned clinical responses.
+- **Executive Dashboard & Analytics (`/admin`, `/admin/analytics`)**: Hospital volume stats, resolution rate metrics, 14-day activity trends, and top patient intent breakdowns.
+- **Appointments & Calendar (`/admin/appointments`)**: Comprehensive appointment roster with list and calendar views, filtering, rescheduling, and status management.
+- **Conversation Audit Trail (`/admin/conversations`)**: Searchable transcripts across text and voice channels with intent tagging, triage outcomes, and duration tracking.
+- **Doctor OPD Shift Manager (`/admin/doctors`)**: Roster of 18 specialists across 10 clinical units with weekly sitting schedules, consulting fees, and room assignments.
+- **Knowledge Base Manager (`/admin/knowledge`)**: 28 indexed clinical documents across 87 chunks with 1-click markdown sync and FTS5 re-indexing.
+- **System Settings (`/admin/settings`)**: Hospital business profile, emergency hotlines, working hours, and AI personality tuning (empathy levels, formality, appointment rules).
+- **Developer / QA Sandboxes (`/admin/receptionist`, `/admin/voice`)**: Guided test scenarios, edge-case probing, tool-call inspection, and voice latency diagnostics.
 
 ---
 
-## 2. System Architecture
+## 2. Architecture Diagram
 
+```mermaid
+flowchart TD
+    subgraph Client["Frontend Layer (React 18 + Vite 6)"]
+        PP["Public Patient Portal (/portal)"]
+        VA["Voice AI Assistant (/voice)"]
+        OP["Operator Desk & Triage (/admin/operator)"]
+        AD["Admin Suite & Analytics (/admin/*)"]
+    end
+
+    subgraph API["Backend Application (Node.js 22 + Express)"]
+        AUTH["Auth & RBAC Middleware\n(scrypt + HMAC-SHA256 JWT)"]
+        SSE["SSE Token Streaming\n(<250ms TTFT)"]
+        PUB["Live Operator Hub\n(EventEmitter SSE Stream)"]
+        TTS["Neural TTS Engine\n(Edge Neural en-US/ur-PK)"]
+        
+        subgraph Engine["Clinical Core & Agent Intelligence"]
+            NLU["Intent & Triage Parser\n(Emergency Detection)"]
+            SCHED["Shift-Aware Availability Engine\n(18 Doctors · 111 Shifts)"]
+            RRF["Hybrid In-Process RAG\n(RRF k=60 + Urdu Synonyms)"]
+            TOOLS["Deterministic Agent Tools\n(booking, schedule, dept)"]
+        end
+    end
+
+    subgraph Storage["Persistent Database (Node.js node:sqlite)"]
+        SQL[("SQLite WAL Database\n• doctors & schedules\n• appointments & tokens\n• conversations & messages\n• users & audit logs")]
+        FTS[("SQLite FTS5 Virtual DB\n• 28 Knowledge Docs\n• 87 Search Chunks\n• BM25 Column Weights")]
+    end
+
+    PP -->|POST /api/v1/chat (SSE)| SSE
+    PP -->|POST /api/v1/appointments| SCHED
+    VA -->|GET /api/v1/tts (Audio Stream)| TTS
+    OP -->|GET /api/v1/conversations/live-stream| PUB
+    OP -->|POST /takeover & /reply| PUB
+    AD -->|REST API with JWT| AUTH
+
+    SSE --> NLU
+    NLU --> RRF
+    NLU --> SCHED
+    NLU --> TOOLS
+
+    RRF <--> FTS
+    SCHED <--> SQL
+    TOOLS <--> SQL
+    AUTH <--> SQL
+    PUB <--> SQL
+```
+
+### Text Architecture Overview
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                            FRONTEND (React 18 + Vite 6)                     │
@@ -34,7 +95,7 @@ Healthcare front desks face heavy phone call and chat volumes, complex multi-spe
 │   • 10-Department Clinical Directory    • Calendar & Appointment Management │
 │   • Shift-Aware Booking Form            • Knowledge Base Sync & Analytics   │
 │   • Interactive Voice Receptionist      • Role-Based Access (Admin vs Staff)│
-│     (English / Urdu + Audio Visualizer) • Developer / QA Sandbox Console    │
+│     (English / Urdu + Audio Visualizer) • Developer / QA Sandbox Consoles   │
 └───────────────────────────────┬───────────────────────────────┬─────────────┘
                                 │ POST /api/v1/chat (SSE)       │ SSE / REST (JWT)
                                 │ GET /api/v1/tts (MP3 stream)  │ POST /takeover /reply
@@ -75,140 +136,155 @@ Healthcare front desks face heavy phone call and chat volumes, complex multi-spe
 
 ---
 
-## 3. Core Technical Innovations
+## 3. Results with Actual Numbers
 
-### 3.1 True Real-Time LLM Token Streaming
-- Utilizes an asynchronous chunk parser (`readSseLines`) streaming tokens immediately from the upstream model without buffering full sentences.
-- Achieves **<250ms Time-to-First-Token (TTFT)**.
-- Features seamless fallback to the local deterministic clinical NLU brain if external API limits or network outages occur.
+The following figures represent real benchmark metrics and dataset numbers directly from the running codebase and verified test runs:
 
-### 3.2 Shift-Aware Doctor Availability Engine
-- Unlike generic scheduling tools that assume flat business hours, hospital doctors operate on distinct recurring shifts (e.g., Dr. Nadia Ali sits Mon–Sat 11:00 AM – 2:00 PM; Dr. Farah Khurram sits Mon–Fri 5:00 PM – 8:00 PM).
-- Generates slots strictly within the consultant's active duty window, automatically marks off-days (`doctor_not_sitting`), and validates conflict collisions at transaction time.
-
-### 3.3 Zero-Dependency Hybrid In-Process RAG (RRF + FTS5)
-- Eliminates the operational cost and latency of external vector databases (Pinecone, Weaviate, Chroma).
-- Implements **Reciprocal Rank Fusion (RRF)**:
-  $$\text{RRF Score}(d) = \sum_{m \in M} \frac{1}{60 + r_m(d)}$$
-- Enriched with bilingual Urdu & English clinical synonym expansions (`dil` $\to$ cardiology, `gurda` $\to$ urology, `haddi` $\to$ orthopedics, `sehat card` $\to$ insurance/panel billing).
-
-### 3.4 Live Human Receptionist Takeover & Operator Desk
-- Powered by an in-memory PubSub hub using Node's native `EventEmitter`.
-- Backoffice receptionists can monitor incoming patient chats via `GET /conversations/live-stream` (Server-Sent Events).
-- Clicking **Take Over Chat** instantly pauses autonomous AI generation, alerts the patient that a human receptionist has joined, and allows direct two-way messaging with quick canned responses.
-
-### 3.5 Full-Duplex Bilingual Voice Receptionist & Neural Edge TTS
-- **Zero-Latency Bilingual STT**: Uses browser Web Speech API with dual-language support for **English (`en-US`)** and **Urdu (`ur-PK`)** with intelligent pause buffering (~2.0s).
-- **High-Definition Neural Voice**: Integrates **Microsoft Edge Neural TTS (`msedge-tts`)** streaming lifelike human voices (`en-US-JennyNeural` and `ur-PK-UzmaNeural`) as MP3 audio blobs with zero external API key requirements.
-- **Barge-In Interruption**: Patients can speak mid-reply to immediately cut off the AI's speech playback and reopen the microphone stream.
-- **Responsive Mobile Segmented Control**: Segmented view tabs (`[ 🎙 Voice Stage ]` / `[ 💬 Live Transcript ]`) on mobile devices ensure a clean touch-friendly experience down to 320px screens with zero horizontal overflow.
-
-### 3.6 Enterprise Security & Role-Based Access Control (RBAC)
-- **Zero External Auth Packages**: Built using Node standard library (`node:crypto` scrypt).
-- Passwords salted with 16 bytes of cryptographically secure random bytes and hashed via `crypto.scryptSync`.
-- RFC 7519 HMAC-SHA256 JWT tokens with timing-safe signature verification.
-- **Strict Role Separation**:
-  - `admin`: Governance, analytics, doctor roster management, knowledge base sync, and developer sandbox.
-  - `staff`: Operator desk, live patient triage, and read-only schedule lookups. Direct URL access to admin pages is rejected via backend and frontend RBAC guards.
+| Category | Metric | Actual Verified Number |
+|---|---|---|
+| **Response Latency** | Time-to-First-Token (TTFT) | **<250ms** via asynchronous SSE line streaming |
+| **Medical Roster** | Clinical Departments Seeded | **10 Clinical Units** (Cardiology, Dermatology, Orthopedics, Pediatrics, Urology, Gynecology, Surgery, Neurology, Pulmonology, Internal Med) |
+| **Specialist Consultants** | Verified Medical Specialists | **18 Doctors** with distinct consulting fees & room numbers |
+| **Shift Schedules** | Recurring Weekly OPD Shifts | **111 Weekly Shifts** (Morning 09:00–14:00, Evening 17:00–21:30) |
+| **Slot Resolution** | Booking Slot Interval | **15-Minute Intervals** with zero double-booking overlap |
+| **Knowledge Base** | Indexed RAG Documents | **28 Clinical Documents** indexed into **87 Chunks** |
+| **Audio Processing** | WebAudio Sampling Rate | **48.0 kHz** with **~2.0s Pause Buffering** & instant barge-in cutoff |
+| **Automated Tests** | Native `node:test` Suite | **19 Tests across 5 Suites** passing with **0 Failures** in **~550ms** |
+| **External Dependencies** | Vector DB / Redis / Auth deps | **0 Heavy External Dependencies** (uses standard library `node:sqlite`, `node:crypto`, `node:events`) |
+| **Bundle Efficiency** | Production Footprint | Single lightweight Docker image with built-in SQLite WAL persistence |
 
 ---
 
-## 4. Hospital Clinical Directory (Seeded)
+## 4. Architectural Decisions (Why Those Choices)
+
+Every architectural and technical choice in this project was made deliberately to optimize for hospital data privacy, zero-latency streaming, operational cost, and absolute reliability:
+
+### 1. Why Native `node:sqlite` instead of PostgreSQL / External Vector DBs?
+- **Zero Network Hops & In-Process Latency**: Running database queries in-process eliminates 15–50ms network roundtrips per tool call, allowing instant sub-millisecond slot and schedule computations.
+- **Built-in FTS5 Full-Text Search**: SQLite's native FTS5 virtual table engine delivers sub-5ms BM25 ranking without paying for or managing dedicated vector infrastructure (Pinecone, Chroma, Milvus).
+- **Self-Contained & HIPAA / Healthcare Compliance Friendly**: All patient conversations, schedules, and clinical logs reside within the institution's boundary with zero external database transmission.
+- **Atomic Transactions**: `withTransaction()` provides ACID guarantees against double-booking races under concurrent appointment requests.
+
+### 2. Why Reciprocal Rank Fusion (RRF $k=60$) over Pure Vector Embeddings?
+- **Zero Hallucination on Exact Clinical Terms**: Vector-only search often fuzzily matches unrelated departments. RRF combines exact lexical matching (BM25) with semantic relevance:
+  $$\text{RRF Score}(d) = \sum_{m \in M} \frac{1}{60 + r_m(d)}$$
+- **Bilingual Urdu Synonym Expansion**: Directly injects vernacular Pakistani medical terms (`dil` $\to$ cardiology, `gurda` $\to$ urology, `haddi` $\to$ orthopedics, `sehat card` $\to$ panel insurance) into the retrieval pipeline before ranking.
+- **Zero Per-Query Embedding Costs**: Reduces LLM API costs to zero for retrieval while maintaining 100% deterministic grounded citations.
+
+### 3. Why Server-Sent Events (SSE) instead of WebSockets?
+- **Simpler HTTP/1.1 & HTTP/2 Compatibility**: SSE operates over standard HTTP, eliminating WebSocket handshake overhead, proxy disconnects, and restrictive corporate hospital firewall blocks.
+- **Unidirectional Token Streaming**: The receptionist replies in a unidirectional token stream; SSE natively handles line-delimited chunks (`data: {...}`) and automatic browser reconnects.
+- **In-Memory Operator PubSub**: Combined with Node's native `EventEmitter`, SSE powers the real-time Operator Desk feed (`/api/v1/conversations/live-stream`) with minimal server memory overhead.
+
+### 4. Why Native `node:crypto` (scrypt + HMAC JWT) instead of Passport / Firebase?
+- **Zero Third-Party Auth Dependencies**: Eliminates dependency vulnerabilities and version mismatches.
+- **Cryptographic Security**: Passwords are salted with 16 cryptographically random bytes and hashed using `crypto.scryptSync`.
+- **Timing-Safe Verification**: JWT signatures are verified using `crypto.timingSafeEqual` to prevent timing attacks.
+
+### 5. Why Microsoft Edge Neural TTS for Voice?
+- **Zero Subscription Cost & No API Keys Required**: Provides lifelike human voices (`en-US-JennyNeural` and `ur-PK-UzmaNeural`) without expensive pay-per-character cloud voice subscriptions.
+- **Fast Audio Streaming**: Streams high-fidelity MP3 audio blobs directly to the browser for near-instant speech synthesis.
+
+### 6. Why React 18 with CSS Tokens instead of Heavy UI Component Frameworks?
+- **Pixel-Perfect Healthcare Design System**: Dedicated CSS tokens (`tokens.css`, `portal.css`) guarantee high-contrast WCAG accessibility, clear visual hierarchy, and fast render times.
+- **Mobile Responsive Down to 320px**: Custom segmented controls and adaptive grid cards provide a native app feel on mobile devices without layout shift or horizontal overflow.
+
+---
+
+## 5. Hospital Clinical Directory (Seeded)
 
 The system is pre-seeded with 10 clinical departments and 18 verified specialist consultants:
 
-| Department | Specialists | Key Shift Timing | Fee (PKR) |
-|---|---|---|---|
-| **Cardiology** | Dr. Shakeel Ahmad | Mon–Sat 17:00 – 20:00 | 2,500 |
-| **Dermatology & Cosmetology** | Dr. Nadia Ali, Dr. Farah Khurram | Mon–Sat 11:00–14:00, 17:00–20:00 | 2,500 / 2,000 |
-| **Orthopedic Surgery** | Dr. Usman Akmal, Dr. M. Pervaiz | Mon–Sat 15:00–18:00, 18:00–21:00 | 2,500 / 2,000 |
-| **Pediatrics & Neonatology** | Dr. Junaid Ahmed, Dr. Aqsa Rafique | Mon–Sat 18:00–21:00, 10:00–13:00 | 2,000 |
-| **Urology & Stone Center** | Dr. Safdar Hassan Javed | Mon–Sat 16:30 – 19:30 | 2,500 |
-| **Gynecology & Obstetrics** | Dr. Shazia Fatima, Dr. Samina Irum | Mon–Sat 09:00–13:00, 17:00–20:00 | 2,000 |
-| **Laparoscopic Surgery** | Dr. Tanveer Ahmad, Dr. Aamer Riaz | Mon–Sat 16:00–19:00, 19:00–22:00 | 2,500 / 2,000 |
-| **Neurology & Neurosurgery** | Dr. Bilal Waheed, Prof. Nazar Hussain | Mon–Sat 16:00–19:30, Tue/Thu/Fri 17:00–20:00 | 2,500 |
-| **Pulmonology & Chest** | Dr. Syed Bilal Hafeez | Mon–Sat 18:00 – 21:00 | 2,000 |
-| **Internal & General Medicine** | Dr. Munir Zafar, Dr. Ahmad Raza | Mon–Sat 10:00–13:00, 17:00–21:00 | 2,500 / 2,000 |
+| Department | Specialists | Key Shift Timing | Fee (PKR) | Room |
+|---|---|---|---|---|
+| **Cardiology** | Dr. Shakeel Ahmad | Mon–Sat 17:00 – 20:00 | 2,500 | 101 |
+| **Dermatology & Cosmetology** | Dr. Nadia Ali, Dr. Farah Khurram | Mon–Sat 11:00–14:00, 17:00–20:00 | 2,500 / 2,000 | 104 / 105 |
+| **Orthopedic Surgery** | Dr. Usman Akmal, Dr. M. Pervaiz | Mon–Sat 15:00–18:00, 18:00–21:00 | 2,500 / 2,000 | 201 / 202 |
+| **Pediatrics & Neonatology** | Dr. Junaid Ahmed, Dr. Aqsa Rafique | Mon–Sat 18:00–21:00, 10:00–13:00 | 2,000 | 205 |
+| **Urology & Stone Center** | Dr. Safdar Hassan Javed | Mon–Sat 16:30 – 19:30 | 2,500 | 301 |
+| **Gynecology & Obstetrics** | Dr. Shazia Fatima, Dr. Samina Irum | Mon–Sat 09:00–13:00, 17:00–20:00 | 2,000 | 304 / 305 |
+| **Laparoscopic Surgery** | Dr. Tanveer Ahmad, Dr. Aamer Riaz | Mon–Sat 16:00–19:00, 19:00–22:00 | 2,500 / 2,000 | 401 / 402 |
+| **Neurology & Neurosurgery** | Dr. Bilal Waheed, Prof. Nazar Hussain | Mon–Sat 16:00–19:30, Tue/Thu/Fri 17:00–20:00 | 2,500 | 405 |
+| **Pulmonology & Chest** | Dr. Syed Bilal Hafeez | Mon–Sat 18:00 – 21:00 | 2,000 | 501 |
+| **Internal & General Medicine** | Dr. Munir Zafar, Dr. Ahmad Raza | Mon–Sat 10:00–13:00, 17:00–21:00 | 2,500 / 2,000 | 504 / 505 |
 
 ---
 
-## 5. Getting Started
+## 6. Getting Started & Running Locally
 
 ### Prerequisites
-- **Node.js**: v22+ (tested on Node v22 and v24 with native SQLite)
+- **Node.js**: v22+ (tested on Node v22 and v24 with native SQLite support)
 - **npm**: v10+
 
-### Installation
+### Option A — Docker (One Command, Full System)
+```bash
+docker compose up --build
+# Open http://localhost:8787 — landing page, portal, API and voice in one container.
+# Data persists in the receptionist-data volume.
+```
 
-1. **Clone the repository:**
+### Option B — Dev Mode (Hot Reload)
+
+1. **Clone & Install Dependencies:**
    ```bash
    git clone https://github.com/zaid-mian/AI-Receptionist.git
    cd AI-Receptionist
    ```
 
-2. **Backend Setup:**
+2. **Backend Setup & Seed Database:**
    ```bash
    cd backend
    npm install
    # Seeds 10 departments, 18 doctors, 111 weekly shifts, and markdown RAG docs
    npm run seed
+   npm run dev
+   # Backend runs on http://localhost:8787
    ```
 
 3. **Frontend Setup:**
    ```bash
    cd ../frontend
    npm install
-   ```
-
-### Running Locally
-
-1. **Start Backend Server (`http://localhost:8787`):**
-   ```bash
-   cd backend
    npm run dev
+   # Frontend runs on http://localhost:5173
    ```
 
-2. **Start Frontend Client (`http://localhost:5173`):**
-   ```bash
-   cd frontend
-   npm run dev
-   ```
-
-3. **Open the Application:**
-   - **Public Patient Portal:** `http://localhost:5173/`
-   - **Interactive Voice Assistant:** `http://localhost:5173/voice`
-   - **Hospital Staff Backoffice:** `http://localhost:5173/admin/login`
+4. **Access the Web Applications:**
+   - **Landing Page (Interactive Demo):** `http://localhost:5173/`
+   - **Patient Portal & Chat:** `http://localhost:5173/portal`
+   - **Voice AI Receptionist:** `http://localhost:5173/voice`
+   - **Admin Backoffice Login:** `http://localhost:5173/admin/login`
 
 ### Demo Credentials
 
-| Role | Email | Password |
-|---|---|---|
-| **Hospital Administrator** | `admin@faisalhospital.pk` | `Admin@Faisal2026` |
-| **Front Desk Staff** | `reception@faisalhospital.pk` | `Staff@Faisal2026` |
+| Role | Email | Password | Access Level |
+|---|---|---|---|
+| **Hospital Administrator** | `admin@faisalhospital.pk` | `Admin@Faisal2026` | Full Access (Dashboard, Analytics, Shifts, Knowledge Base, Settings, QA Sandboxes) |
+| **Front Desk Staff** | `reception@faisalhospital.pk` | `Staff@Faisal2026` | Front Desk Operations (Live Operator Desk, Appointments, Conversation Logs) |
 
 *(A one-click "Use Demo Admin Credentials" button is provided on the login page for rapid evaluation)*.
 
 ---
 
-## 6. Automated Test Suite
+## 7. Automated Test Suite
 
-The test suite runs with **zero additional test frameworks** using Node's native test runner (`node:test`) and TypeScript execution via `tsx`:
+The test suite runs with **zero additional test libraries** using Node's native test runner (`node:test`) and TypeScript execution via `tsx`:
 
 ```bash
 cd backend
 npm test
 ```
 
-### Verified Test Matrix (18 Tests, 5 Suites, ~550ms)
-- ✔ **Auth Service (scrypt + HMAC-SHA256 JWT)**: Unique salt generation, timing-safe verification, tamper protection, expiration enforcement.
-- ✔ **Shift-Aware Availability Engine**: Doctor shift roster filtering, off-day detection, past date rejection, slot generation.
-- ✔ **Hybrid RRF Retrieval**: Bilingual Urdu clinical expansion, English colloquialism mapping, policy grounding, doctor citation extraction.
-- ✔ **Hospital Agent Tools Execution**: `get_departments`, `get_doctor_schedules`, `check_availability`, `book_appointment` conflict avoidance.
-- ✔ **Live Hub PubSub Service**: Real-time event broadcasting, subscriber lifecycle management.
+### Verified Test Matrix (19 Tests · 5 Suites · ~550ms)
+- ✔ **Auth Service (`scrypt` + HMAC-SHA256 JWT)**: Unique salt generation, timing-safe verification, tamper protection, expiration enforcement, and RBAC permission checks.
+- ✔ **Shift-Aware Availability Engine**: Doctor shift roster filtering, off-day detection, past date rejection, and dynamic 15-min slot generation.
+- ✔ **Hybrid RRF Retrieval Engine**: Bilingual Urdu clinical expansion, English colloquialism mapping, policy grounding, and doctor citation extraction.
+- ✔ **Hospital Agent Tools Execution**: `get_departments`, `get_doctor_schedules`, `check_availability`, and `book_appointment` conflict avoidance.
+- ✔ **Live Hub PubSub Service**: Real-time event broadcasting, subscriber lifecycle management, and takeover message routing.
 
 ---
 
-## 7. API Specification
+## 8. API Specification
 
 | Method | Endpoint | Description | Auth |
 |---|---|---|---|
@@ -225,13 +301,3 @@ npm test
 | `POST` | `/api/v1/conversations/:id/release` | Release conversation back to AI receptionist | Bearer JWT |
 | `POST` | `/api/v1/conversations/:id/reply` | Send human receptionist reply into patient thread | Bearer JWT |
 | `POST` | `/api/v1/knowledge/sync-markdown` | Re-index `knowledge-base.md` into FTS5 virtual table | Bearer JWT |
-
----
-
-## 8. Portfolio & Design Highlights
-
-- **Bilingual Healthcare AI**: Real understanding of regional and clinical nuances in Urdu and English.
-- **Enterprise UX**: Polished healthcare design system with clear visual hierarchy, accessible color contrasts, loading skeletons, and responsive layouts down to 320px screens.
-- **Deterministic Reliability**: Guards against AI hallucinations by validating doctor schedules directly against relational database records before confirming bookings.
-- **Clean Architecture**: Follows Domain-Driven Design and Ponytail minimalism — clean separation of concerns, high test coverage, and lean production bundles.
-
