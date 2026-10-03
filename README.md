@@ -39,49 +39,51 @@ Modern hospital front desks face immense pressure: high phone call and chat volu
 
 ```mermaid
 flowchart TD
-    subgraph Client["Frontend Layer (React 18 + Vite 6)"]
-        PP["Public Patient Portal (/portal)"]
-        VA["Voice AI Assistant (/voice)"]
-        OP["Operator Desk & Triage (/admin/operator)"]
-        AD["Admin Suite & Analytics (/admin/*)"]
+    subgraph Client["Frontend Layer: React 18 + Vite 6"]
+        PP["Public Patient Portal: /portal"]
+        VA["Voice AI Assistant: /voice"]
+        OP["Operator Desk & Triage: /admin/operator"]
+        AD["Admin Suite & Analytics: /admin/*"]
     end
 
-    subgraph API["Backend Application (Node.js 22 + Express)"]
-        AUTH["Auth & RBAC Middleware\n(scrypt + HMAC-SHA256 JWT)"]
-        SSE["SSE Token Streaming\n(<250ms TTFT)"]
-        PUB["Live Operator Hub\n(EventEmitter SSE Stream)"]
-        TTS["Neural TTS Engine\n(Edge Neural en-US/ur-PK)"]
+    subgraph API["Backend Application: Node.js 22 + Express"]
+        AUTH["Auth & RBAC Middleware<br/>scrypt + HMAC-SHA256 JWT"]
+        SSE["SSE Token Streaming<br/>sub-250ms TTFT"]
+        PUB["Live Operator Hub<br/>EventEmitter SSE Stream"]
+        TTS["Neural TTS Engine<br/>Edge Neural en-US and ur-PK"]
         
         subgraph Engine["Clinical Core & Agent Intelligence"]
-            NLU["Intent & Triage Parser\n(Emergency Detection)"]
-            SCHED["Shift-Aware Availability Engine\n(18 Doctors · 111 Shifts)"]
-            RRF["Hybrid In-Process RAG\n(RRF k=60 + Urdu Synonyms)"]
-            TOOLS["Deterministic Agent Tools\n(booking, schedule, dept)"]
+            NLU["Intent & Triage Parser<br/>Emergency Red-Flag Detection"]
+            SCHED["Shift-Aware Availability Engine<br/>18 Doctors, 111 Shifts"]
+            RRF["Hybrid In-Process RAG<br/>RRF k=60 + Urdu Clinical Synonyms"]
+            TOOLS["Deterministic Agent Tools<br/>booking, schedule, dept"]
         end
     end
 
-    subgraph Storage["Persistent Database (Node.js node:sqlite)"]
-        SQL[("SQLite WAL Database\n• doctors & schedules\n• appointments & tokens\n• conversations & messages\n• users & audit logs")]
-        FTS[("SQLite FTS5 Virtual DB\n• 28 Knowledge Docs\n• 87 Search Chunks\n• BM25 Column Weights")]
+    subgraph Storage["Persistent Database: Node.js node:sqlite"]
+        SQL[("SQLite WAL Database<br/>doctors, shifts, appointments, tokens<br/>conversations, messages, users")]
+        FTS[("SQLite FTS5 Virtual DB<br/>28 Knowledge Docs, 87 Search Chunks<br/>BM25 Column Weights")]
     end
 
-    PP -->|POST /api/v1/chat (SSE)| SSE
-    PP -->|POST /api/v1/appointments| SCHED
-    VA -->|GET /api/v1/tts (Audio Stream)| TTS
-    OP -->|GET /api/v1/conversations/live-stream| PUB
-    OP -->|POST /takeover & /reply| PUB
-    AD -->|REST API with JWT| AUTH
+    PP -->|"POST /api/v1/chat (SSE)"| SSE
+    PP -->|"POST /api/v1/appointments"| SCHED
+    VA -->|"GET /api/v1/tts (Audio Stream)"| TTS
+    OP -->|"GET /api/v1/conversations/live-stream"| PUB
+    OP -->|"POST /takeover and /reply"| PUB
+    AD -->|"REST API with JWT"| AUTH
 
     SSE --> NLU
     NLU --> RRF
     NLU --> SCHED
     NLU --> TOOLS
 
-    RRF <--> FTS
-    SCHED <--> SQL
-    TOOLS <--> SQL
-    AUTH <--> SQL
-    PUB <--> SQL
+    RRF --> FTS
+    FTS --> RRF
+    SCHED --> SQL
+    SQL --> SCHED
+    TOOLS --> SQL
+    AUTH --> SQL
+    PUB --> SQL
 ```
 
 ### Text Architecture Overview
