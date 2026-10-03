@@ -7,6 +7,11 @@ An enterprise-grade, production-quality AI Receptionist, Shift-Aware Clinical Av
 ![Node.js](https://img.shields.io/badge/Node.js-22%2B%20(Native%20SQLite)-339933?style=flat-square&logo=node.js)
 ![React](https://img.shields.io/badge/React-18%20(Vanilla%20CSS)-61DAFB?style=flat-square&logo=react)
 ![Tests](https://img.shields.io/badge/Tests-19%20Passed%20(0%20deps)-success?style=flat-square)
+[![YouTube Walkthrough](https://img.shields.io/badge/YouTube-Watch%20Demo%20Video-FF0000?style=flat-square&logo=youtube)](https://youtu.be/Eruo9HaWV6c)
+
+[![Faisal Hospital AI Receptionist Walkthrough](docs/demo.gif)](https://youtu.be/Eruo9HaWV6c)
+
+> 📹 **[Click here to watch the full 1080p 60fps walkthrough on YouTube](https://youtu.be/Eruo9HaWV6c)** with full audio narration, voice assistant responses, and sound design.
 
 ---
 
